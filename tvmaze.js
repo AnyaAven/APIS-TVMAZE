@@ -1,4 +1,6 @@
-const TVMAZE_BASE_URL = `https://api.tvmaze.com/search/shows/`; //FIXME: remove /search/shows
+const TVMAZE_BASE_URL = `https://api.tvmaze.com/`;
+const DEFAULT_IMG_URL = "https://tinyurl.com/tv-missing";
+
 
 /** Given a search term, search for tv shows that match that query.
  *
@@ -11,26 +13,25 @@ async function getShowsByTerm(term) {
   console.log("initializing getShowsByTerm");
 
   const paramTerm = new URLSearchParams({ q: term });
-  const tvShowsURL = TVMAZE_BASE_URL.concat(`?${paramTerm}`); //FIXME: add /search/shows/
+  const tvShowsURL = TVMAZE_BASE_URL.concat(`search/shows/?${paramTerm}`);
 
-  const fetchResponse = await fetch(tvShowsURL);
-  const parsedFetchResponse = await fetchResponse.json(); //TODO: use a better name, idk the context, is it a string, idk! Give plural , list, etc.
+  const showAndScoreListJSON = await fetch(tvShowsURL);
+  const showAndScoreList = await showAndScoreListJSON.json();
 
-  const defaultImgUrl = "https://tinyurl.com/tv-missing"; //FIXME: Make into global const
 
   const formattedShows =
-    parsedFetchResponse.map((singleShow) => { //FIXME: showAndScore
+    showAndScoreList.map((showAndScore) => {
 
-      const imgFromShow = singleShow.show.image; //I don't think we need image.original
-      const img = imgFromShow ? imgFromShow.original : defaultImgUrl; //Medium, original takes much longer to load
+      const imgFromShow = showAndScore.show.image;
+      const img = imgFromShow ? imgFromShow.medium : DEFAULT_IMG_URL;
 
-      //desctructing for singleshow.show {id, name, summary, image}
+      //TODO: desctructing for singleshow.show {id, name, summary, image}
 
       return {
-        id: singleShow.show.id,
-        name: singleShow.show.name,
-        summary: singleShow.show.summary,
-        image: img //TODO: question, should we use just image
+        id: showAndScore.show.id,
+        name: showAndScore.show.name,
+        summary: showAndScore.show.summary,
+        image: img
       };
     });
 
@@ -38,7 +39,37 @@ async function getShowsByTerm(term) {
   return formattedShows;
 }
 
+/** Given a show ID, get from API and return (promise) array of episodes:
+ *      { id, name, season, number }
+ */
+
+async function getEpisodesOfShow(id) {  // called on Episodes button click, which will pass id
+  console.log("initialization getEpisodesOfShow()");
+
+  const episodesURL = TVMAZE_BASE_URL.concat(`${id}/episodes`);
+
+  const episodesJSON = await fetch(episodesURL);
+  const episodesList = await episodesJSON.json();
+
+  const formattedEpisodes = episodesList.map((episode) => {
+    return (
+      {
+        id: episode.id,
+        name: episode.name,
+        season: episode.season,
+        number: episode.number
+      }
+    );
+
+  });
+
+  console.log("episodes parsed json",
+    formattedEpisodes
+  );
+
+}
+
 
 // ADD: other functions that will be useful for getting episode/show data
 
-export { getShowsByTerm };
+export { getShowsByTerm, getEpisodesOfShow };
