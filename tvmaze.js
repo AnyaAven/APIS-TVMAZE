@@ -1,6 +1,4 @@
-const TVMAZE_BASE_URL = `https://api.tvmaze.com/`;
-const DEFAULT_IMG_URL = "https://tinyurl.com/tv-missing";
-
+const TVMAZE_BASE_URL = `https://api.tvmaze.com/search/shows/`;
 
 /** Given a search term, search for tv shows that match that query.
  *
@@ -13,25 +11,19 @@ async function getShowsByTerm(term) {
   console.log("initializing getShowsByTerm");
 
   const paramTerm = new URLSearchParams({ q: term });
-  const tvShowsURL = TVMAZE_BASE_URL.concat(`search/shows/?${paramTerm}`);
+  const showFetchURL = TVMAZE_BASE_URL.concat(`?${paramTerm}`);
+  console.log(showFetchURL);
 
-  const showAndScoreListJSON = await fetch(tvShowsURL);
-  const showAndScoreList = await showAndScoreListJSON.json();
-
+  const fetchResponse = await fetch(showFetchURL);
+  const parsedFetchResponse = await fetchResponse.json();
 
   const formattedShows =
-    showAndScoreList.map((showAndScore) => {
-
-      const imgFromShow = showAndScore.show.image;
-      const img = imgFromShow ? imgFromShow.medium : DEFAULT_IMG_URL;
-
-      //TODO: desctructing for singleshow.show {id, name, summary, image}
-
+    parsedFetchResponse.map((singleShow) => {
       return {
-        id: showAndScore.show.id,
-        name: showAndScore.show.name,
-        summary: showAndScore.show.summary,
-        image: img
+        id: singleShow.show.id,
+        name: singleShow.show.name,
+        summary: singleShow.show.summary,
+        image: singleShow.show.image.original
       };
     });
 
@@ -39,37 +31,6 @@ async function getShowsByTerm(term) {
   return formattedShows;
 }
 
-/** Given a show ID, get from API and return (promise) array of episodes:
- *      { id, name, season, number }
- */
-
-async function getEpisodesOfShow(id) {  // called on Episodes button click, which will pass id
-  console.log("initialization getEpisodesOfShow()");
-
-  const episodesURL = TVMAZE_BASE_URL.concat(`${id}/episodes`);
-
-  const episodesJSON = await fetch(episodesURL);
-  const episodesList = await episodesJSON.json();
-
-  const formattedEpisodes = episodesList.map((episode) => {
-    return (
-      {
-        id: episode.id,
-        name: episode.name,
-        season: episode.season,
-        number: episode.number
-      }
-    );
-
-  });
-
-  console.log("episodes parsed json",
-    formattedEpisodes
-  );
-
-}
-
-
 // ADD: other functions that will be useful for getting episode/show data
 
-export { getShowsByTerm, getEpisodesOfShow };
+export { getShowsByTerm };

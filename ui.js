@@ -1,9 +1,9 @@
-import { getShowsByTerm, getEpisodesOfShow } from "./tvmaze.js";
+import { getShowsByTerm } from "./tvmaze.js";
+//, getEpisodesOfShow
 
 const $showsList = document.querySelector("#showsList");
 const $episodesArea = document.querySelector("#episodesArea");
 const $searchForm = document.querySelector("#searchForm");
-const episodesBtn = "Show-getEpisodes";
 
 /** Given list of shows, create markup for each and append to DOM.
  *
@@ -13,6 +13,7 @@ const episodesBtn = "Show-getEpisodes";
 
 function displayShows(shows) {
   $showsList.innerHTML = '';
+
 
   for (const show of shows) {
     const $show = document.createElement("div");
@@ -28,54 +29,53 @@ function displayShows(shows) {
            <div class="media-body">
              <h5 class="text-primary">${show.name}</h5>
              <div><small>${show.summary}</small></div>
-             <button class="btn btn-outline-light btn-sm ${episodesBtn}">
+             <button class="btn btn-outline-light btn-sm Show-getEpisodes">
                Episodes
              </button>
            </div>
          </div>
       `;
 
-
+    $showsList.appendChild($show);
   }
+}
 
-  /** Handle search form submission: get shows from API and display.
-   *    Hide episodes area (that only gets shown if they ask for episodes)
-   */
+/** Handle search form submission: get shows from API and display.
+ *    Hide episodes area (that only gets shown if they ask for episodes)
+ */
 
-  async function searchShowsAndDisplay() {
-    const term = document.querySelector("#searchForm-term").value;
-    const shows = await getShowsByTerm(term);
+async function searchShowsAndDisplay() {
+  const term = document.querySelector("#searchForm-term").value;
+  const shows = await getShowsByTerm(term);
 
-    $episodesArea.style.display = "none";
-    displayShows(shows);
-  }
-
-
-  // TODO: make sure to add eventlistener and call showepisodes
+  $episodesArea.style.display = "none";
+  displayShows(shows);
+}
 
 
-  /** Write a clear docstring for this function... */
-
-  // function displayEpisodes(episodes) { }
-
-  // add other functions that will be useful / match our structure & design
-  // and udpate start as necessary
+// TODO: make sure to add eventlistener and call showepisodes
 
 
-  /** Attach event listeners to show search form and show list  */ // TODO:
-  // append to #episodesArea
+/** Write a clear docstring for this function... */
 
-  function start() {
-    $searchForm.addEventListener("submit", async function handleSearchForm(evt) {
-      evt.preventDefault();
-      await searchShowsAndDisplay();
-    });
+// function displayEpisodes(episodes) { }
 
-  }
+// add other functions that will be useful / match our structure & design
+// and udpate start as necessary
 
 
-  export {
-    displayShows,
-    searchShowsAndDisplay,
-    start,
-  };
+/** Attach event listeners to show search form and show list  */
+
+function start() {
+  $searchForm.addEventListener("submit", async function handleSearchForm(evt) {
+    evt.preventDefault();
+    await searchShowsAndDisplay();
+  });
+}
+
+
+export {
+  displayShows,
+  searchShowsAndDisplay,
+  start,
+};
