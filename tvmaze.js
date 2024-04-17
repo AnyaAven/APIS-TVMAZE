@@ -11,20 +11,24 @@ async function getShowsByTerm(term) {
   console.log("initializing getShowsByTerm");
 
   const paramTerm = new URLSearchParams({ q: term });
-  const showFetchURL = TVMAZE_BASE_URL.concat(`?${paramTerm}`);
-  console.log(showFetchURL);
+  const fetchURL = TVMAZE_BASE_URL.concat(`?${paramTerm}`);
 
-  const fetchResponse = await fetch(showFetchURL);
+  const fetchResponse = await fetch(fetchURL);
   const parsedFetchResponse = await fetchResponse.json();
-  console.log("parsed API response:", parsedFetchResponse);
+
+  const defaultImgUrl = "https://tinyurl.com/tv-missing";
 
   const formattedShows =
     parsedFetchResponse.map((singleShow) => {
+
+      const imgFromShow = singleShow.show.image.original;
+      const img = imgFromShow ? imgFromShow : defaultImgUrl;
+
       return {
         id: singleShow.show.id,
         name: singleShow.show.name,
         summary: singleShow.show.summary,
-        image: singleShow.show.image.original
+        image: img
       };
     });
 
