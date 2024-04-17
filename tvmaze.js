@@ -16,7 +16,7 @@ async function getShowsByTerm(term) {
   console.log(showFetchURL);
 
   const fetchResponse = await fetch(showFetchURL);
-  const parsedFetchResponse = fetchResponse.json();
+  const parsedFetchResponse = await fetchResponse.json();
   console.log("parsed API response:", parsedFetchResponse);
 
   const showInfo = await parsedFetchResponse[0];
@@ -24,10 +24,10 @@ async function getShowsByTerm(term) {
 
   const formattedShowInfo = [
     {
-      id: showInfo.id,
-      name: showInfo.name,
-      summary: showInfo.summary,
-      image: showInfo.image.original
+      id: showInfo.show.id,
+      name: showInfo.show.name,
+      summary: showInfo.show.summary,
+      image: showInfo.show.image.original
     }
   ];
 
