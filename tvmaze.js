@@ -1,4 +1,4 @@
-const TVMAZE_BASE_URL = `https://api.tvmaze.com/search/shows/`;
+const TVMAZE_BASE_URL = `https://api.tvmaze.com/search/shows/`; //FIXME: remove /search/shows
 
 /** Given a search term, search for tv shows that match that query.
  *
@@ -11,24 +11,26 @@ async function getShowsByTerm(term) {
   console.log("initializing getShowsByTerm");
 
   const paramTerm = new URLSearchParams({ q: term });
-  const fetchURL = TVMAZE_BASE_URL.concat(`?${paramTerm}`);
+  const tvShowsURL = TVMAZE_BASE_URL.concat(`?${paramTerm}`); //FIXME: add /search/shows/
 
-  const fetchResponse = await fetch(fetchURL);
-  const parsedFetchResponse = await fetchResponse.json();
+  const fetchResponse = await fetch(tvShowsURL);
+  const parsedFetchResponse = await fetchResponse.json(); //TODO: use a better name, idk the context, is it a string, idk! Give plural , list, etc.
 
-  const defaultImgUrl = "https://tinyurl.com/tv-missing";
+  const defaultImgUrl = "https://tinyurl.com/tv-missing"; //FIXME: Make into global const
 
   const formattedShows =
-    parsedFetchResponse.map((singleShow) => {
+    parsedFetchResponse.map((singleShow) => { //FIXME: showAndScore
 
-      const imgFromShow = singleShow.show.image.original;
-      const img = imgFromShow ? imgFromShow : defaultImgUrl;
+      const imgFromShow = singleShow.show.image; //I don't think we need image.original
+      const img = imgFromShow ? imgFromShow.original : defaultImgUrl; //Medium, original takes much longer to load
+
+      //desctructing for singleshow.show {id, name, summary, image}
 
       return {
         id: singleShow.show.id,
         name: singleShow.show.name,
         summary: singleShow.show.summary,
-        image: img
+        image: img //TODO: question, should we use just image
       };
     });
 
