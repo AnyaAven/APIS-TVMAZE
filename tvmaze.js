@@ -18,20 +18,18 @@ async function getShowsByTerm(term) {
   const parsedFetchResponse = await fetchResponse.json();
   console.log("parsed API response:", parsedFetchResponse);
 
-  const showInfo = await parsedFetchResponse[0];
-  console.log("accessing index 0", showInfo);
+  const formattedShows =
+    parsedFetchResponse.map((singleShow) => {
+      return {
+        id: singleShow.show.id,
+        name: singleShow.show.name,
+        summary: singleShow.show.summary,
+        image: singleShow.show.image.original
+      };
+    });
 
-  const formattedShowInfo = [
-    {
-      id: showInfo.show.id,
-      name: showInfo.show.name,
-      summary: showInfo.show.summary,
-      image: showInfo.show.image.original
-    }
-  ];
-
-  console.log("our final input for show info: ", formattedShowInfo);
-  return formattedShowInfo;
+  console.log("our final input for show info: ", formattedShows);
+  return formattedShows;
 }
 
 
