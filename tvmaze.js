@@ -43,11 +43,29 @@ async function getShowsByTerm(term) {
  */
 
 async function getEpisodesOfShow(id) {
-  console.log("getEpisodesOfShow", {id});
+  console.log("getEpisodesOfShow", id);
 
+  const episodesURL = TVMAZE_BASE_URL.concat(`shows/${id}/episodes`);
 
-  return id;
- }
+  const episodesListJSON = await fetch(episodesURL);
+  const episodesList = await episodesListJSON.json();
+
+  console.log("completed episodes list", episodesList);
+  const formattedEpisodes = episodesList.map((episode) => {
+    const { id, name, season, number } = {
+      id: episode.id,
+      name: episode.name,
+      season: episode.season,
+      number: episode.number
+    };
+
+    return { id, name, season, number };
+  });
+
+  console.log("completed episodes list", formattedEpisodes);
+
+  return formattedEpisodes;
+}
 
 
 // ADD: other functions that will be useful for getting episode/show data

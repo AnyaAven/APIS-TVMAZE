@@ -59,6 +59,7 @@ async function searchShowsAndDisplay() {
 
 function displayEpisodes(episodes) {
 
+  getEpisodesOfShow();
 }
 
 // add other functions that will be useful / match our structure & design
@@ -67,7 +68,7 @@ function displayEpisodes(episodes) {
 
 /** Attach event listeners to show search form and show list  */
 
-function start () {
+function start() {
   $searchForm.addEventListener("submit", async function handleSearchForm(evt) {
     evt.preventDefault();
     await searchShowsAndDisplay();
@@ -75,16 +76,17 @@ function start () {
 
   });
 
-  $showsList.addEventListener("click", async function handleEpisodesClick (evt){
+  $showsList.addEventListener("click", async function handleEpisodesClick(evt) {
     evt.preventDefault();
 
-    if(evt.target.matches(`button.${EPISODE_BTN_CLASS}`)){ //TODO: why can't button work here? "button .class"
-      const episodes = await getEpisodesOfShow("cats-1"); //FIXME:
+    if (evt.target.matches(`button.${EPISODE_BTN_CLASS}`)) {
+      const id = evt.target.dataset.showid; // TODO:
+      const episodes = await getEpisodesOfShow(id); //FIXME:
 
       displayEpisodes(episodes);
     }
 
-  })
+  });
 }
 
 
