@@ -50,14 +50,7 @@ async function getEpisodesOfShow(id) {
   const episodesListJSON = await fetch(episodesURL);
   const episodesList = await episodesListJSON.json();
 
-  const formattedEpisodes = episodesList.map((episode) => {
-    const { id, name, season, number } = {
-      id: episode.id,
-      name: episode.name,
-      season: episode.season,
-      number: episode.number
-    };
-
+  const formattedEpisodes = episodesList.map(({ id, name, season, number }) => {
     return { id, name, season, number };
   });
 
