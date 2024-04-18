@@ -23,7 +23,7 @@ async function getShowsByTerm(term) {
       const imgFromShow = showAndScore.show.image; //I don't think we need image.original
       const img = imgFromShow ? imgFromShow.medium : DEFAULT_IMG_URL; //Medium, original takes much longer to load
 
-      //TODO:desctructing for singleshow.show {id, name, summary, image}
+      //TODO:desctructing for singleshow.show {id, name, summary, image} ?
 
       return {
         id: showAndScore.show.id,
@@ -66,7 +66,5 @@ async function getEpisodesOfShow(id) {
   return formattedEpisodes;
 }
 
-
-// ADD: other functions that will be useful for getting episode/show data
 
 export { getShowsByTerm, getEpisodesOfShow };
