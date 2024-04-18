@@ -55,12 +55,13 @@ async function searchShowsAndDisplay() {
 }
 
 
-/** Get episodes from show from API and display in episode area
+/** Get episodes from show from API and display in episode area.
  *
  * episodes: { id, name, season, number }
 */
 
 function displayEpisodes(episodes) {
+  $episodesArea.innerHTML = "";
 
   for (const episode of episodes) {
     const $episode = document.createElement("div");
