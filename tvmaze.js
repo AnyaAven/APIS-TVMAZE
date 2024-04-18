@@ -50,7 +50,6 @@ async function getEpisodesOfShow(id) {
   const episodesListJSON = await fetch(episodesURL);
   const episodesList = await episodesListJSON.json();
 
-  console.log("completed episodes list", episodesList);
   const formattedEpisodes = episodesList.map((episode) => {
     const { id, name, season, number } = {
       id: episode.id,
