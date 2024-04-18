@@ -55,35 +55,59 @@ async function searchShowsAndDisplay() {
 }
 
 
-/** Get episodes from show from API and display */
+/** Get episodes from show from API and display in episode area
+ *
+ * episodes: { id, name, season, number }
+*/
 
 function displayEpisodes(episodes) {
 
-  getEpisodesOfShow();
+  for (const episode of episodes) {
+    const $episode = document.createElement("div");
+    $episode.dataset.showId = episode.id;
+    $episode.className = "Show col-md-12 col-lg-6 mb-4";
+
+    $episode.innerHTML = `
+         <div class="media">
+           <div class="media-body">
+             <h5 class="text-primary">${episode.name}</h5>
+             <div><small>Season ${episode.season}, episode ${episode.number}</small>
+             </div>
+           </div>
+         </div>
+      `;
+
+    $episodesArea.appendChild($episode);
+  }
 }
 
-// add other functions that will be useful / match our structure & design
-// and udpate start as necessary
+/**
+ * Handle episode button: get episodes from API and display.
+ *
+ */
+async function searchEpisodesAndDisplay(id){
+  $episodesArea.style.display = "block";
 
+  const episodes = await getEpisodesOfShow(id);
+  displayEpisodes(episodes);
+}
 
 /** Attach event listeners to show search form and show list  */
 
 function start() {
   $searchForm.addEventListener("submit", async function handleSearchForm(evt) {
     evt.preventDefault();
+
     await searchShowsAndDisplay();
-
-
   });
 
   $showsList.addEventListener("click", async function handleEpisodesClick(evt) {
     evt.preventDefault();
 
+    // event delegation
     if (evt.target.matches(`button.${EPISODE_BTN_CLASS}`)) {
-      const id = evt.target.dataset.showid; // TODO:
-      const episodes = await getEpisodesOfShow(id); //FIXME:
-
-      displayEpisodes(episodes);
+      const id = evt.target.dataset.showid;
+      await searchEpisodesAndDisplay(id);
     }
 
   });
