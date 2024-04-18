@@ -85,7 +85,7 @@ function displayEpisodes(episodes) {
  * Handle episode button: get episodes from API and display.
  *
  */
-async function searchEpisodesAndDisplay(id){
+async function searchEpisodesAndDisplay(id) {
   $episodesArea.style.display = "block";
 
   const episodes = await getEpisodesOfShow(id);
