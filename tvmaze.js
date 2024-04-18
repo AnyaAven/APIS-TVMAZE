@@ -1,4 +1,5 @@
-const TVMAZE_BASE_URL = `https://api.tvmaze.com/search/shows/`;
+const TVMAZE_BASE_URL = `https://api.tvmaze.com/`;
+const DEFAULT_IMG_URL = "https://tinyurl.com/tv-missing";
 
 /** Given a search term, search for tv shows that match that query.
  *
@@ -11,19 +12,24 @@ async function getShowsByTerm(term) {
   console.log("initializing getShowsByTerm");
 
   const paramTerm = new URLSearchParams({ q: term });
-  const showFetchURL = TVMAZE_BASE_URL.concat(`?${paramTerm}`);
-  console.log(showFetchURL);
+  const tvShowsURL = TVMAZE_BASE_URL.concat(`search/shows/?${paramTerm}`);
 
-  const fetchResponse = await fetch(showFetchURL);
-  const parsedFetchResponse = await fetchResponse.json();
+  const showAndScoreListJSON = await fetch(tvShowsURL);
+  const showsAndScoreList = await showAndScoreListJSON.json();
 
   const formattedShows =
-    parsedFetchResponse.map((singleShow) => {
+    showsAndScoreList.map((showAndScore) => {
+
+      const imgFromShow = showAndScore.show.image; //I don't think we need image.original
+      const img = imgFromShow ? imgFromShow.medium : DEFAULT_IMG_URL; //Medium, original takes much longer to load
+
+      //TODO:desctructing for singleshow.show {id, name, summary, image}
+
       return {
-        id: singleShow.show.id,
-        name: singleShow.show.name,
-        summary: singleShow.show.summary,
-        image: singleShow.show.image.original
+        id: showAndScore.show.id,
+        name: showAndScore.show.name,
+        summary: showAndScore.show.summary,
+        image: img
       };
     });
 
@@ -31,6 +37,19 @@ async function getShowsByTerm(term) {
   return formattedShows;
 }
 
+
+/** Given a show ID, get from API and return (promise) array of episodes:
+ *      { id, name, season, number }
+ */
+
+async function getEpisodesOfShow(id) {
+  console.log("getEpisodesOfShow", {id});
+
+
+  return id;
+ }
+
+
 // ADD: other functions that will be useful for getting episode/show data
 
-export { getShowsByTerm };
+export { getShowsByTerm, getEpisodesOfShow };
