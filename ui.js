@@ -1,9 +1,11 @@
-import { getShowsByTerm } from "./tvmaze.js";
-//, getEpisodesOfShow
+import { getShowsByTerm, getEpisodesOfShow } from "./tvmaze.js";
 
 const $showsList = document.querySelector("#showsList");
 const $episodesArea = document.querySelector("#episodesArea");
 const $searchForm = document.querySelector("#searchForm");
+
+const EPISODE_BTN_CLASS = "Show-getEpisodes";
+
 
 /** Given list of shows, create markup for each and append to DOM.
  *
@@ -13,7 +15,6 @@ const $searchForm = document.querySelector("#searchForm");
 
 function displayShows(shows) {
   $showsList.innerHTML = '';
-
 
   for (const show of shows) {
     const $show = document.createElement("div");
@@ -29,7 +30,8 @@ function displayShows(shows) {
            <div class="media-body">
              <h5 class="text-primary">${show.name}</h5>
              <div><small>${show.summary}</small></div>
-             <button class="btn btn-outline-light btn-sm Show-getEpisodes">
+             <button class="btn btn-outline-light btn-sm ${EPISODE_BTN_CLASS}"
+             data-showid="${show.id}">
                Episodes
              </button>
            </div>
@@ -53,12 +55,11 @@ async function searchShowsAndDisplay() {
 }
 
 
-// TODO: make sure to add eventlistener and call showepisodes
+/** Get episodes from show from API and display */
 
+function displayEpisodes(episodes) {
 
-/** Write a clear docstring for this function... */
-
-// function displayEpisodes(episodes) { }
+}
 
 // add other functions that will be useful / match our structure & design
 // and udpate start as necessary
@@ -66,12 +67,26 @@ async function searchShowsAndDisplay() {
 
 /** Attach event listeners to show search form and show list  */
 
-function start() {
+function start () {
   $searchForm.addEventListener("submit", async function handleSearchForm(evt) {
     evt.preventDefault();
     await searchShowsAndDisplay();
+
+
   });
+
+  $showsList.addEventListener("click", async function handleEpisodesClick (evt){
+    evt.preventDefault();
+
+    if(evt.target.matches(`button.${EPISODE_BTN_CLASS}`)){ //TODO: why can't button work here? "button .class"
+      const episodes = await getEpisodesOfShow("cats-1"); //FIXME:
+
+      displayEpisodes(episodes);
+    }
+
+  })
 }
+
 
 
 export {
